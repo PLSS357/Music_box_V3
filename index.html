@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#6f5bd6" />
+    <title>Caixinha de Música</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <div
+      class="music-box-container"
+      id="boxContainer"
+      aria-live="polite"
+      aria-label="Caixinha de música. Clique para abrir ou fechar."
+    >
+      <div class="music-box click-guard" id="musicBox">
+        <div class="box-base">
+          <div class="music-box-interior" id="interior">
+            <!-- Foto circular que gira como um vinil -->
+            <div class="vinyl-record" id="vinylRecord" aria-hidden="true">
+              <img
+                id="recordImage"
+                class="record-image"
+                src="IMG/disco.png"
+                alt="Foto do disco"
+              />
+              <div class="record-center"></div>
+            </div>
+          </div>
+        </div>
+        <div class="box-lid" id="boxLid" aria-hidden="true">
+          <div class="lid-hinge"></div>
+        </div>
+      </div>
+
+      <div class="musical-notes" id="musicalNotes" aria-hidden="true">
+        <div class="note">♪</div>
+        <div class="note">♫</div>
+        <div class="note">♪</div>
+        <div class="note">♬</div>
+      </div>
+
+      <div class="controls">
+        <div class="status" id="status">Caixinha Fechada</div>
+        <div class="instruction">Toque / clique para abrir e fechar</div>
+      </div>
+
+      <!-- Seletor de Músicas: 1 linha -->
+      <div class="music-selector" id="musicSelector">
+        <button class="song-button active" data-song="0" aria-label="Música 1">
+          <img src="IMG/disco.png" alt="Música 1" />
+        </button>
+        <button class="song-button" data-song="1" aria-label="Música 2">
+          <img src="IMG/Red.png" alt="Música 2" />
+        </button>
+        <button class="song-button" data-song="2" aria-label="Música 3">
+          <img src="IMG/Blue.png" alt="Música 3" />
+        </button>
+        <button class="song-button" data-song="3" aria-label="Música 4">
+          <img src="IMG/Yellow.png" alt="Música 4" />
+        </button>
+        <button class="song-button" data-song="4" aria-label="Música 5">
+          <img src="IMG/Rose.png" alt="Música 5" />
+        </button>
+      </div>
+    </div>
+
+    <div class="volume-control" id="volumeCard">
+      <label for="volumeSlider">Volume</label>
+      <input
+        type="range"
+        min="0"
+        max="1"
+        step="0.05"
+        value="0.7"
+        class="volume-slider"
+        id="volumeSlider"
+        aria-label="Controle de volume"
+      />
+    </div>
+
+    <!-- Áudio: será alterado dinamicamente -->
+    <audio id="musicAudio" preload="auto" loop>
+      <source src="" type="audio/mpeg" />
+      Seu navegador não suporta o elemento de áudio.
+    </audio>
+
+    <script src="script.js" defer></script>
+  </body>
+</html>

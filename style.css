@@ -1,0 +1,665 @@
+/* ===== Reset básico ===== */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+}
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+}
+
+/* ===== Variáveis responsivas ===== */
+:root {
+  --box-w: min(88vw, 420px);
+  --box-h: calc(var(--box-w) * 0.6875);
+  --lid-h: clamp(22px, 9vw, 38px);
+  --vinyl: clamp(120px, 36vw, 180px);
+  --status-size: clamp(14px, 2.3vw, 18px);
+  --instruction-size: clamp(12px, 1.8vw, 14px);
+  --radius: 16px;
+  --btn-size: 72px; /* tamanho base do botão circular */
+}
+
+/* ===== Layout de fundo ===== */
+body {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  padding: 6vh 4vw calc(8vh + env(safe-area-inset-bottom));
+}
+
+/* ===== Container com perspectiva ===== */
+.music-box-container {
+  position: relative;
+  perspective: 1000px;
+  cursor: pointer;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  animation: fadeInUp 0.9s ease-out;
+  width: var(--box-w);
+  margin-bottom: 0;
+}
+
+.music-box {
+  width: var(--box-w);
+  height: var(--box-h);
+  position: relative;
+  transform-style: preserve-3d;
+  transition: filter 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.music-box.open {
+  filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.3));
+}
+
+.box-base {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: linear-gradient(145deg, #8b5a2b, #a05f2b);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3),
+    inset 0 2px 0 rgba(255, 255, 255, 0.12), inset 0 -2px 0 rgba(0, 0, 0, 0.25);
+}
+.box-base::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: var(--radius);
+  background: linear-gradient(
+      90deg,
+      transparent 0%,
+      rgba(255, 255, 255, 0.08) 50%,
+      transparent 100%
+    ),
+    repeating-linear-gradient(
+      45deg,
+      rgba(139, 69, 19, 0.06) 0 3px,
+      rgba(0, 0, 0, 0.06) 3px 6px
+    );
+  pointer-events: none;
+}
+
+.box-lid {
+  width: 100%;
+  height: var(--lid-h);
+  background: linear-gradient(145deg, #cd8a47, #d2691e);
+  position: absolute;
+  top: calc(-1 * var(--lid-h));
+  left: 0;
+  border-radius: var(--radius) var(--radius) 6px 6px;
+  transform-origin: bottom center;
+  transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  box-shadow: 0 -10px 20px rgba(0, 0, 0, 0.22),
+    inset 0 2px 0 rgba(255, 255, 255, 0.22);
+  z-index: 10;
+  transform: rotateX(0deg);
+}
+.box-lid.open {
+  transform: rotateX(-120deg);
+}
+
+.lid-hinge {
+  position: absolute;
+  bottom: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: clamp(64px, 24vw, 100px);
+  height: 4px;
+  border-radius: 2px;
+  background: #6f3d17;
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.35);
+}
+
+.music-box-interior {
+  position: absolute;
+  inset: 0;
+  padding: clamp(14px, 4vw, 22px);
+  border-radius: var(--radius);
+  background: linear-gradient(145deg, #8b5a2b, #a05f2b),
+    repeating-linear-gradient(
+      45deg,
+      rgba(139, 69, 19, 0.85) 0 3px,
+      rgba(160, 82, 45, 0.55) 3px 6px
+    );
+  box-shadow: inset 0 0 22px rgba(0, 0, 0, 0.35);
+  display: grid;
+  place-items: center;
+  opacity: 0;
+  transition: opacity 0.5s ease-in-out 0.3s;
+}
+.music-box-interior.visible {
+  opacity: 1;
+}
+
+/* ===== Disco (foto circular girando) ===== */
+.vinyl-record {
+  width: var(--vinyl);
+  height: var(--vinyl);
+  border-radius: 50%;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.45),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.08);
+  animation: none;
+  transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  will-change: transform, filter, box-shadow;
+  transform-style: preserve-3d; /* necessário pro 3D da troca */
+}
+.vinyl-record.spinning {
+  animation: vinylSpin 3.4s linear infinite;
+  box-shadow: 0 15px 30px rgba(0, 0, 0, 0.6),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.15), 0 0 20px rgba(255, 215, 0, 0.3);
+}
+
+.record-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
+  display: block;
+  transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  transform: scale(1);
+}
+
+.record-center {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+}
+.record-center::before {
+  content: "";
+  width: clamp(18px, 4vw, 24px);
+  height: clamp(18px, 4vw, 24px);
+  border-radius: 50%;
+  background: #8b5a2b;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+}
+.record-center::after {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #5a3415;
+}
+
+.vinyl-record::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  pointer-events: none;
+  background: radial-gradient(
+      circle at 50% 50%,
+      rgba(0, 0, 0, 0) 58%,
+      rgba(0, 0, 0, 0.15) 59%,
+      rgba(0, 0, 0, 0) 60%
+    ),
+    repeating-radial-gradient(
+      circle at 50% 50%,
+      rgba(255, 255, 255, 0.04) 0 1px,
+      rgba(0, 0, 0, 0.04) 1px 2px
+    );
+  mix-blend-mode: multiply;
+}
+
+@keyframes vinylSpin {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ===== Notas musicais ===== */
+.musical-notes {
+  position: absolute;
+  top: 6%;
+  left: 55%;
+  width: clamp(84px, 28vw, 128px);
+  height: clamp(84px, 28vw, 128px);
+  opacity: 0;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+.musical-notes.floating {
+  opacity: 1;
+  animation: float 3s ease-in-out infinite;
+}
+.note {
+  position: absolute;
+  color: #e5f0ff;
+  font-weight: 700;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+  font-size: clamp(18px, 4vw, 26px);
+}
+.note:nth-child(1) {
+  top: 0;
+  left: 20px;
+  animation-delay: 0s;
+}
+.note:nth-child(2) {
+  top: 30px;
+  left: 60px;
+  animation-delay: 0.5s;
+}
+.note:nth-child(3) {
+  top: 60px;
+  left: 10px;
+  animation-delay: 1s;
+}
+.note:nth-child(4) {
+  top: 20px;
+  left: 80px;
+  animation-delay: 1.5s;
+}
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0) scale(1);
+    opacity: 0.7;
+  }
+  50% {
+    transform: translateY(-20px) scale(1.2);
+    opacity: 1;
+  }
+}
+
+/* ===== Troca 3D do disco ===== */
+.vinyl-record.swap-out {
+  animation: recordSwapOut 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+.vinyl-record.swap-in {
+  animation: recordSwapIn 0.9s cubic-bezier(0.22, 0.61, 0.36, 1) forwards;
+}
+.vinyl-record.swap-in::after {
+  box-shadow: 0 0 24px rgba(255, 215, 0, 0.35),
+    inset 0 0 0 2px rgba(255, 255, 255, 0.15);
+}
+.vinyl-record::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: linear-gradient(
+    120deg,
+    transparent 30%,
+    rgba(255, 255, 255, 0.28) 50%,
+    transparent 70%
+  );
+  transform: translateX(-120%) rotate(15deg);
+  filter: blur(8px);
+  pointer-events: none;
+  opacity: 0;
+}
+.vinyl-record.swap-in::before {
+  opacity: 1;
+  animation: sweepSheen 0.8s ease-out 0.15s both;
+}
+.vinyl-record.swap-out .record-image {
+  transform: translateZ(40px) scale(1.08) rotateZ(6deg);
+  filter: brightness(1.1) saturate(1.15);
+}
+.vinyl-record.swap-in .record-image {
+  transform: translateZ(20px) scale(1.04);
+}
+@keyframes recordSwapOut {
+  0% {
+    transform: translateZ(0) rotateZ(0) rotateY(0) scale(1);
+    opacity: 1;
+    filter: blur(0);
+  }
+  40% {
+    transform: translateZ(60px) rotateZ(8deg) rotateX(12deg) scale(1.04);
+  }
+  100% {
+    transform: translateZ(-220px) rotateY(70deg) rotateZ(35deg) scale(0.88);
+    opacity: 0;
+    filter: blur(4px);
+  }
+}
+@keyframes recordSwapIn {
+  0% {
+    transform: translateZ(-220px) rotateY(-70deg) rotateZ(-35deg) scale(0.88);
+    opacity: 0;
+    filter: blur(4px);
+  }
+  60% {
+    transform: translateZ(40px) rotateY(6deg) rotateZ(3deg) scale(1.04);
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    transform: translateZ(0) rotateY(0) rotateZ(0) scale(1);
+  }
+}
+@keyframes sweepSheen {
+  from {
+    transform: translateX(-120%) rotate(15deg);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(120%) rotate(15deg);
+    opacity: 0.85;
+  }
+}
+
+/* ===== Efeito sutil nas notas ao trocar ===== */
+.musical-notes.bounce {
+  animation: notesBounce 0.6s ease;
+}
+@keyframes notesBounce {
+  0% {
+    transform: translateY(0) scale(1);
+  }
+  50% {
+    transform: translateY(-8px) scale(1.05);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ===== Seletor de Músicas: 1 linha, mais abaixo, botões 100% circulares ===== */
+.music-selector {
+  position: static;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  padding: 16px;
+  margin-top: 32px; /* mais distante da caixa */
+  max-width: min(92vw, 560px);
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(15px);
+  border-radius: 25px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+  animation: slideUpFade 1s ease-out 0.2s both;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  overflow-x: auto; /* garante 1 linha mesmo em telas estreitas */
+  -webkit-overflow-scrolling: touch;
+}
+.music-selector::-webkit-scrollbar {
+  height: 6px;
+}
+.music-selector::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+}
+
+.song-button {
+  flex: 0 0 var(--btn-size);
+  width: var(--btn-size);
+  height: var(--btn-size);
+  aspect-ratio: 1/1;
+  border-radius: 999px;
+  border: none;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), filter 0.3s,
+    box-shadow 0.3s;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  background: #fff;
+  outline: none;
+  transform: translateY(0) scale(1) rotateZ(0deg);
+}
+.song-button:hover {
+  transform: translateY(-8px) scale(1.15) rotateZ(5deg);
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(255, 215, 0, 0.4);
+  filter: brightness(1.05);
+}
+.song-button.active {
+  transform: translateY(-4px) scale(1.2);
+  box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.8), 0 0 0 8px rgba(255, 215, 0, 0.3),
+    0 15px 35px rgba(0, 0, 0, 0.5), 0 0 30px rgba(255, 215, 0, 0.6);
+  animation: activeGlow 2.5s ease-in-out infinite;
+}
+.song-button.active:hover {
+  transform: translateY(-8px) scale(1.25) rotateZ(3deg);
+}
+
+.song-button img {
+  width: 100%;
+  height: 100%;
+  border-radius: 999px;
+  display: block;
+  object-fit: cover;
+  object-position: center;
+  transition: transform 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55), filter 0.3s;
+  transform: scale(1) rotate(0deg);
+}
+.song-button:hover img {
+  transform: scale(1.1) rotate(10deg);
+  filter: brightness(1.1) saturate(1.1);
+}
+.song-button.selecting {
+  animation: selectingSong 0.8s ease-in-out;
+  pointer-events: none;
+}
+
+.song-button::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: 999px;
+  background: conic-gradient(
+    from 0deg,
+    transparent 0deg,
+    rgba(255, 215, 0, 0.8) 90deg,
+    transparent 180deg,
+    rgba(255, 215, 0, 0.8) 270deg,
+    transparent 360deg
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  animation: rotateBorder 3s linear infinite;
+}
+.song-button.active::before {
+  opacity: 1;
+}
+.song-button::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: radial-gradient(circle, #fff 30%, rgba(255, 215, 0, 0.9) 100%);
+  transform: translate(-50%, -50%) scale(0);
+  transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55),
+    opacity 0.3s;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4), 0 0 10px rgba(255, 215, 0, 0.8);
+}
+.song-button.active::after {
+  transform: translate(-50%, -50%) scale(1);
+  animation: centerPulse 2s ease-in-out infinite;
+}
+
+@keyframes activeGlow {
+  0%,
+  100% {
+    box-shadow: 0 0 0 4px rgba(255, 215, 0, 0.8),
+      0 0 0 8px rgba(255, 215, 0, 0.3), 0 15px 35px rgba(0, 0, 0, 0.5),
+      0 0 30px rgba(255, 215, 0, 0.6);
+  }
+  50% {
+    box-shadow: 0 0 0 4px rgba(255, 215, 0, 1),
+      0 0 0 12px rgba(255, 215, 0, 0.1), 0 15px 35px rgba(0, 0, 0, 0.5),
+      0 0 40px rgba(255, 215, 0, 0.8);
+  }
+}
+@keyframes selectingSong {
+  0% {
+    transform: translateY(0) scale(1) rotateZ(0deg);
+  }
+  25% {
+    transform: translateY(-10px) scale(1.3) rotateZ(180deg);
+  }
+  50% {
+    transform: translateY(-5px) scale(0.8) rotateZ(360deg);
+  }
+  75% {
+    transform: translateY(-8px) scale(1.1) rotateZ(540deg);
+  }
+  100% {
+    transform: translateY(-4px) scale(1.2) rotateZ(720deg);
+  }
+}
+@keyframes rotateBorder {
+  from {
+    transform: rotate(0);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+@keyframes centerPulse {
+  0%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.3);
+    opacity: 0.7;
+  }
+}
+@keyframes slideUpFade {
+  from {
+    opacity: 0;
+    transform: translateY(40px) scale(0.98);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+/* ===== Status / instruções ===== */
+.controls {
+  text-align: center;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  width: 100%;
+  margin-top: 12px;
+}
+.status {
+  font-size: var(--status-size);
+  font-weight: 700;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+}
+.instruction {
+  font-size: var(--instruction-size);
+  opacity: 0.9;
+}
+
+/* ===== Cartão de Volume (desktop/tablet) ===== */
+.volume-control {
+  position: fixed;
+  top: max(20px, env(safe-area-inset-top));
+  right: max(20px, env(safe-area-inset-right));
+  color: #fff;
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(10px);
+  padding: 14px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+}
+.volume-control label {
+  font-size: 13px;
+  display: block;
+  margin-bottom: 8px;
+}
+.volume-slider {
+  width: 140px;
+}
+
+/* Acessibilidade: foco */
+.click-guard *:focus {
+  outline: 2px dashed #fff;
+  outline-offset: 4px;
+}
+.no-pointer {
+  pointer-events: none;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(60px) scale(0.8) rotateX(20deg);
+    filter: blur(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0);
+    filter: blur(0);
+  }
+}
+
+/* Preferência do usuário: reduzir movimento */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ===== Responsividade adicional ===== */
+@media (max-width: 520px), (pointer: coarse) {
+  :root {
+    --btn-size: 60px;
+  }
+  .volume-control {
+    position: fixed;
+    inset: auto 12px max(12px, env(safe-area-inset-bottom)) 12px;
+    top: auto;
+    right: auto;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 12px 14px;
+  }
+  .volume-slider {
+    width: min(84vw, 360px);
+  }
+}
+
+/* Telas muito baixas (paisagem em celular) */
+@media (max-height: 520px) {
+  :root {
+    --box-w: min(74vw, 420px);
+  }
+  body {
+    padding-top: 24px;
+    padding-bottom: calc(24px + env(safe-area-inset-bottom));
+  }
+  .music-box-container {
+    margin-bottom: 0;
+  }
+  .music-selector {
+    margin-top: 28px;
+  }
+}
