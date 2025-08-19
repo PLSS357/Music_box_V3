@@ -15,14 +15,14 @@ body {
 
 /* ===== Variáveis responsivas ===== */
 :root {
-  --box-w: min(88vw, 420px);
-  --box-h: calc(var(--box-w) * 0.6875);
+  --box-w: min(92vw, 450px);
+  --box-h: calc(var(--box-w) * 0.75);
   --lid-h: clamp(22px, 9vw, 38px);
   --vinyl: clamp(120px, 36vw, 180px);
   --status-size: clamp(14px, 2.3vw, 18px);
   --instruction-size: clamp(12px, 1.8vw, 14px);
   --radius: 16px;
-  --btn-size: 72px; /* tamanho base do botão circular */
+  --btn-size: clamp(52px, 15vw, 72px); /* responsivo */
 }
 
 /* ===== Layout de fundo ===== */
@@ -379,10 +379,11 @@ body {
   flex-wrap: nowrap;
   justify-content: center;
   align-items: center;
-  gap: 12px;
-  padding: 16px;
-  margin-top: 32px; /* mais distante da caixa */
-  max-width: min(92vw, 560px);
+  gap: clamp(8px, 2vw, 12px);
+  padding: 24px 40px;
+  margin-top: 32px;
+  width: 100%;
+  max-width: 100%;
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(15px);
   border-radius: 25px;
@@ -390,15 +391,7 @@ body {
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   animation: slideUpFade 1s ease-out 0.2s both;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  overflow-x: auto; /* garante 1 linha mesmo em telas estreitas */
-  -webkit-overflow-scrolling: touch;
-}
-.music-selector::-webkit-scrollbar {
-  height: 6px;
-}
-.music-selector::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.25);
-  border-radius: 20px;
+  overflow: hidden; /* removido o overflow-x: auto */
 }
 
 .song-button {
@@ -619,7 +612,7 @@ body {
 /* ===== Responsividade adicional ===== */
 @media (max-width: 520px), (pointer: coarse) {
   :root {
-    --btn-size: 60px;
+    --btn-size: clamp(48px, 13vw, 60px);
   }
   .volume-control {
     position: fixed;
@@ -634,12 +627,17 @@ body {
   .volume-slider {
     width: min(84vw, 360px);
   }
+  .music-selector {
+    gap: clamp(6px, 1.5vw, 10px);
+    padding: 18px 30px;
+  }
 }
 
 /* Telas muito baixas (paisagem em celular) */
 @media (max-height: 520px) {
   :root {
-    --box-w: min(74vw, 420px);
+    --box-w: min(78vw, 450px);
+    --btn-size: clamp(44px, 12vw, 56px);
   }
   body {
     padding-top: 24px;
@@ -650,5 +648,7 @@ body {
   }
   .music-selector {
     margin-top: 28px;
+    gap: clamp(4px, 1vw, 8px);
+    padding: 16px 24px;
   }
 }
