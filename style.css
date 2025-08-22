@@ -23,6 +23,9 @@ body {
   --instruction-size: clamp(12px, 1.8vw, 14px);
   --radius: 16px;
   --btn-size: clamp(52px, 15vw, 72px); /* responsivo */
+  --btn-gap: clamp(8px, 2vw, 12px);
+  --selector-pad-y: 24px;
+  --selector-pad-x: 40px;
 }
 
 /* ===== Layout de fundo ===== */
@@ -34,7 +37,15 @@ body {
   padding: 6vh 4vw calc(8vh + env(safe-area-inset-bottom));
 }
 
-/* ===== Container com perspectiva ===== */
+/* ===== App: empilha caixa e seletor ===== */
+.music-app {
+  display: grid;
+  justify-items: center;
+  gap: 32px;
+  width: 100%;
+}
+
+/* ===== Container só da CAIXA ===== */
 .music-box-container {
   position: relative;
   perspective: 1000px;
@@ -150,7 +161,7 @@ body {
   animation: none;
   transition: all 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   will-change: transform, filter, box-shadow;
-  transform-style: preserve-3d; /* necessário pro 3D da troca */
+  transform-style: preserve-3d;
 }
 .vinyl-record.spinning {
   animation: vinylSpin 3.4s linear infinite;
@@ -265,6 +276,7 @@ body {
   left: 80px;
   animation-delay: 1.5s;
 }
+
 @keyframes float {
   0%,
   100% {
@@ -372,28 +384,52 @@ body {
   }
 }
 
-/* ===== Seletor de Músicas: 1 linha, mais abaixo, botões 100% circulares ===== */
-.music-selector {
-  position: static;
-  display: flex;
-  flex-wrap: nowrap;
-  justify-content: center;
-  align-items: center;
-  gap: clamp(8px, 2vw, 12px);
-  padding: 24px 40px;
-  margin-top: 32px;
+/* ===== CONTROLES (status/instrução) ===== */
+.controls {
+  text-align: center;
+  color: #fff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
   width: 100%;
-  max-width: 100%;
+  margin-top: 12px;
+}
+.status {
+  font-size: var(--status-size);
+  font-weight: 700;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+}
+.instruction {
+  font-size: var(--instruction-size);
+  opacity: 0.9;
+}
+
+/* ===== BLOCO DO SELETOR (cartão externo) ===== */
+.selector-container {
+  display: grid;
+  place-items: center;
+  padding: var(--selector-pad-y) var(--selector-pad-x);
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(15px);
   border-radius: 25px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4),
     inset 0 1px 0 rgba(255, 255, 255, 0.1);
   animation: slideUpFade 1s ease-out 0.2s both;
-  border: 1px solid rgba(255, 255, 255, 0.1);
-  overflow: hidden; /* removido o overflow-x: auto */
+  max-width: min(100%, 980px);
+  overflow: hidden;
 }
 
+/* ===== LINHA DO SELETOR (auto-largura baseada no conteúdo) ===== */
+.music-selector {
+  position: static;
+  display: flex;
+  align-items: center;
+  gap: var(--btn-gap);
+  width: max-content; /* <- mede pela soma dos botões + gaps */
+  max-width: 100%;
+}
+
+/* Botões circulares */
 .song-button {
   flex: 0 0 var(--btn-size);
   width: var(--btn-size);
@@ -538,25 +574,6 @@ body {
   }
 }
 
-/* ===== Status / instruções ===== */
-.controls {
-  text-align: center;
-  color: #fff;
-  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-  width: 100%;
-  margin-top: 12px;
-}
-.status {
-  font-size: var(--status-size);
-  font-weight: 700;
-  margin-bottom: 8px;
-  transition: all 0.3s ease;
-}
-.instruction {
-  font-size: var(--instruction-size);
-  opacity: 0.9;
-}
-
 /* ===== Cartão de Volume (desktop/tablet) ===== */
 .volume-control {
   position: fixed;
@@ -627,9 +644,13 @@ body {
   .volume-slider {
     width: min(84vw, 360px);
   }
-  .music-selector {
-    gap: clamp(6px, 1.5vw, 10px);
+
+  .selector-container {
     padding: 18px 30px;
+    max-width: calc(100vw - 8vw);
+  }
+  .music-app {
+    gap: 28px;
   }
 }
 
@@ -643,12 +664,7 @@ body {
     padding-top: 24px;
     padding-bottom: calc(24px + env(safe-area-inset-bottom));
   }
-  .music-box-container {
-    margin-bottom: 0;
-  }
-  .music-selector {
-    margin-top: 28px;
-    gap: clamp(4px, 1vw, 8px);
-    padding: 16px 24px;
+  .music-app {
+    gap: 24px;
   }
 }
