@@ -2,27 +2,12 @@
 
 // ===== Configuração de músicas =====
 const songs = [
-  {
-    title: "Regret Message",
-    audio: "MP3/musica.mp3",
-    image: "IMG/disco.png",
-  },
-  {
-    title: "Lullaby",
-    audio: "MP3/musica2.mp3",
-    image: "IMG/Red.png",
-  },
+  { title: "Regret Message", audio: "MP3/musica.mp3", image: "IMG/disco.png" },
+  { title: "Lullaby", audio: "MP3/musica2.mp3", image: "IMG/Red.png" },
   { title: "Bad Romance", audio: "MP3/musica3.mp3", image: "IMG/Blue.png" },
-  {
-    title: "Simple and Clean",
-    audio: "MP3/musica4.mp3",
-    image: "IMG/Yellow.png",
-  },
-  {
-    title: "It's Raining Somewhere Else",
-    audio: "MP3/musica5.mp3",
-    image: "IMG/Rose.png",
-  },
+  { title: "Simple and Clean", audio: "MP3/musica4.mp3", image: "IMG/Yellow.png" },
+  { title: "It's Raining Somewhere Else", audio: "MP3/musica5.mp3", image: "IMG/Rose.png" },
+  { title: "Shelter", audio: "MP3/musica6.mp3", image: "IMG/Green.png" },
 ];
 
 // ===== Estado =====
@@ -45,35 +30,61 @@ const audio = document.getElementById("musicAudio");
 const volumeSlider = document.getElementById("volumeSlider");
 const volumeCard = document.getElementById("volumeCard");
 const musicSelector = document.getElementById("musicSelector");
-const songButtons = document.querySelectorAll(".song-button");
+
+// ===== Render dinâmico dos botões =====
+function renderSongButtons() {
+  // limpa e recria com base no array
+  musicSelector.innerHTML = "";
+  const frag = document.createDocumentFragment();
+
+  songs.forEach((song, index) => {
+    const btn = document.createElement("button");
+    btn.className = "song-button" + (index === currentSong ? " active" : "");
+    btn.setAttribute("type", "button");
+    btn.setAttribute("aria-label", song.title || `Música ${index + 1}`);
+    btn.dataset.songIndex = String(index);
+
+    const img = document.createElement("img");
+    img.src = song.image;
+    img.alt = song.title ? `Capa: ${song.title}` : `Música ${index + 1}`;
+    btn.appendChild(img);
+
+    frag.appendChild(btn);
+  });
+
+  musicSelector.appendChild(frag);
+}
+
+// Delegação de eventos para os botões (funciona com DOM dinâmico)
+musicSelector.addEventListener("click", (e) => {
+  e.stopPropagation();
+  const btn = e.target.closest(".song-button");
+  if (!btn || isChangingSong) return;
+
+  const index = parseInt(btn.dataset.songIndex, 10);
+  if (!Number.isNaN(index) && index !== currentSong) {
+    btn.classList.add("selecting");
+    setTimeout(() => btn.classList.remove("selecting"), 800);
+    changeSong(index);
+  }
+});
+
+// Impedir propagação em outros elementos clicáveis
+volumeCard.addEventListener("click", (e) => e.stopPropagation());
+
+// Volume
+volumeSlider.addEventListener("input", function (e) {
+  e.stopPropagation();
+  audio.volume = parseFloat(this.value);
+});
 
 // Inicialização
 document.addEventListener("DOMContentLoaded", () => {
   audio.volume = parseFloat(volumeSlider.value || "0.7");
   statusEl.textContent = "Caixinha Fechada";
 
+  renderSongButtons(); // <— cria os botões
   loadSong(0);
-
-  // Botões de música
-  songButtons.forEach((button, index) => {
-    button.addEventListener("click", (e) => {
-      e.stopPropagation();
-      if (index !== currentSong && !isChangingSong) {
-        button.classList.add("selecting");
-        setTimeout(() => button.classList.remove("selecting"), 800);
-        changeSong(index);
-      }
-    });
-  });
-});
-
-// Impedir propagação
-volumeCard.addEventListener("click", (e) => e.stopPropagation());
-musicSelector.addEventListener("click", (e) => e.stopPropagation());
-
-volumeSlider.addEventListener("input", function (e) {
-  e.stopPropagation();
-  audio.volume = parseFloat(this.value);
 });
 
 // Alterna caixa ao clicar no container
@@ -135,10 +146,13 @@ function loadSong(index) {
   audio.src = song.audio;
   recordImage.src = song.image;
   currentSong = index;
-  songButtons.forEach((btn, i) => btn.classList.toggle("active", i === index));
+  // atualiza seleção visual
+  document.querySelectorAll(".song-button").forEach((btn, i) => {
+    btn.classList.toggle("active", i === index);
+  });
 }
 
-// ===== Nova troca com 3D =====
+// ===== Troca com animação 3D =====
 function changeSong(index) {
   if (isChangingSong || index === currentSong) return;
   isChangingSong = true;
@@ -147,7 +161,6 @@ function changeSong(index) {
   if (isPlaying) pauseMusic();
 
   statusEl.textContent = "Trocando música...";
-  // efeito sutil nas notas
   musicalNotes.classList.add("bounce");
   setTimeout(() => musicalNotes.classList.remove("bounce"), 600);
 
@@ -158,7 +171,7 @@ function changeSong(index) {
   const IN_MS = 900;
 
   setTimeout(() => {
-    loadSong(index); // troca a capa e o áudio
+    loadSong(index);
     vinylRecord.classList.remove("swap-out");
     vinylRecord.classList.add("swap-in");
 
