@@ -8,64 +8,58 @@
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
-    <div
-      class="music-box-container"
-      id="boxContainer"
-      aria-live="polite"
-      aria-label="Caixinha de música. Clique para abrir ou fechar."
-    >
-      <div class="music-box click-guard" id="musicBox">
-        <div class="box-base">
-          <div class="music-box-interior" id="interior">
-            <!-- Foto circular que gira como um vinil -->
-            <div class="vinyl-record" id="vinylRecord" aria-hidden="true">
-              <img
-                id="recordImage"
-                class="record-image"
-                src="IMG/disco.png"
-                alt="Foto do disco"
-              />
-              <div class="record-center"></div>
+    <main class="music-app">
+      <!-- BLOCO 1 — SOMENTE A CAIXA DE MÚSICA + STATUS -->
+      <section class="music-box-area">
+        <div
+          class="music-box-container"
+          id="boxContainer"
+          aria-live="polite"
+          aria-label="Caixinha de música. Clique para abrir ou fechar."
+        >
+          <div class="music-box click-guard" id="musicBox">
+            <div class="box-base">
+              <div class="music-box-interior" id="interior">
+                <!-- Foto circular que gira como um vinil -->
+                <div class="vinyl-record" id="vinylRecord" aria-hidden="true">
+                  <img
+                    id="recordImage"
+                    class="record-image"
+                    src="IMG/disco.png"
+                    alt="Foto do disco"
+                  />
+                  <div class="record-center"></div>
+                </div>
+              </div>
+            </div>
+            <div class="box-lid" id="boxLid" aria-hidden="true">
+              <div class="lid-hinge"></div>
             </div>
           </div>
+
+          <div class="musical-notes" id="musicalNotes" aria-hidden="true">
+            <div class="note">♪</div>
+            <div class="note">♫</div>
+            <div class="note">♪</div>
+            <div class="note">♬</div>
+          </div>
+
+          <div class="controls">
+            <div class="status" id="status">Caixinha Fechada</div>
+            <div class="instruction">Toque / clique para abrir e fechar</div>
+          </div>
         </div>
-        <div class="box-lid" id="boxLid" aria-hidden="true">
-          <div class="lid-hinge"></div>
+      </section>
+
+      <!-- BLOCO 2 — SOMENTE O MENU DE SELEÇÃO (ABAIXO DA CAIXA) -->
+      <section class="selector-area">
+        <div class="selector-container" id="selectorContainer">
+          <div class="music-selector" id="musicSelector"></div>
         </div>
-      </div>
+      </section>
+    </main>
 
-      <div class="musical-notes" id="musicalNotes" aria-hidden="true">
-        <div class="note">♪</div>
-        <div class="note">♫</div>
-        <div class="note">♪</div>
-        <div class="note">♬</div>
-      </div>
-
-      <div class="controls">
-        <div class="status" id="status">Caixinha Fechada</div>
-        <div class="instruction">Toque / clique para abrir e fechar</div>
-      </div>
-
-      <!-- Seletor de Músicas: 1 linha -->
-      <div class="music-selector" id="musicSelector">
-        <button class="song-button active" data-song="0" aria-label="Música 1">
-          <img src="IMG/disco.png" alt="Música 1" />
-        </button>
-        <button class="song-button" data-song="1" aria-label="Música 2">
-          <img src="IMG/Red.png" alt="Música 2" />
-        </button>
-        <button class="song-button" data-song="2" aria-label="Música 3">
-          <img src="IMG/Blue.png" alt="Música 3" />
-        </button>
-        <button class="song-button" data-song="3" aria-label="Música 4">
-          <img src="IMG/Yellow.png" alt="Música 4" />
-        </button>
-        <button class="song-button" data-song="4" aria-label="Música 5">
-          <img src="IMG/Rose.png" alt="Música 5" />
-        </button>
-      </div>
-    </div>
-
+    <!-- CONTROLE DE VOLUME FIXO -->
     <div class="volume-control" id="volumeCard">
       <label for="volumeSlider">Volume</label>
       <input
