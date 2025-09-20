@@ -2,12 +2,11 @@
 
 // ===== Configuração de músicas =====
 const songs = [
-  { title: "Regret Message", audio: "MP3/musica.mp3", image: "IMG/disco.png" },
-  { title: "Lullaby", audio: "MP3/musica2.mp3", image: "IMG/Red.png" },
-  { title: "Bad Romance", audio: "MP3/musica3.mp3", image: "IMG/Blue.png" },
-  { title: "Simple and Clean", audio: "MP3/musica4.mp3", image: "IMG/Yellow.png" },
-  { title: "It's Raining Somewhere Else", audio: "MP3/musica5.mp3", image: "IMG/Rose.png" },
-  { title: "Shelter", audio: "MP3/musica6.mp3", image: "IMG/Green.png" },
+  { title: "Regret Message", audio: "MP3/Regret Message.mp3", image: "IMG/Regret Message.png" },
+  { title: "Final Duet", audio: "MP3/Final Duet.mp3", image: "IMG/Final Duet.png" },
+  { title: "Simple and Clean", audio: "MP3/Simple and Clean.mp3", image: "IMG/Simple and Clean.png" },
+  { title: "Dear My Friend", audio: "MP3/Dear My Friend.mp3", image: "IMG/Dear My Friend.png" },
+  { title: "Shelter", audio: "MP3/Shelter.mp3", image: "IMG/Shelter.png" },
 ];
 
 // ===== Estado =====
@@ -223,3 +222,4 @@ window.addEventListener("keydown", (e) => {
     changeSong(num - 1);
   }
 });
+
