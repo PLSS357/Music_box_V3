@@ -5,6 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#6f5bd6" />
     <title>Caixinha de Música</title>
+
+    <!-- Fallback padrão: ícone default (opção se JavaScript for desativado) -->
+    <link rel="icon" href="assets/favicon1.png" type="image/png" />
+    <link rel="shortcut icon" href="assets/favicon1.png" type="image/png" />
+
+    <script>
+      // Lista com os caminhos dos favicons disponíveis
+      const favicons = [
+        "assets/faviconA.png",
+        "assets/faviconB.png",
+        "assets/faviconC.png",
+        "assets/faviconD.png",
+        "assets/faviconE.png",
+      ];
+
+      // Escolhe um aleatoriamente
+      const randomFavicon =
+        favicons[Math.floor(Math.random() * favicons.length)];
+
+      // Tenta encontrar uma tag <link rel="icon"> existente
+      let link = document.querySelector("link[rel~='icon']");
+      if (!link) {
+        link = document.createElement("link");
+        link.rel = "icon";
+      }
+      link.href = randomFavicon;
+      document.head.appendChild(link);
+
+      // (Opcional) para navegadores antigos que esperam <link rel="shortcut icon">
+      let shortcut = document.querySelector("link[rel='shortcut icon']");
+      if (!shortcut) {
+        shortcut = document.createElement("link");
+        shortcut.rel = "shortcut icon";
+      }
+      shortcut.href = randomFavicon;
+      document.head.appendChild(shortcut);
+    </script>
     <link rel="stylesheet" href="style.css" />
   </head>
   <body>
